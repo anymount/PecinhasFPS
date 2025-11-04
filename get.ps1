@@ -17,8 +17,10 @@ try {
     $release = Invoke-RestMethod -Uri $apiUrl -Headers $headers
 }
 catch {
-    Write-Host "[X] Failed to contact GitHub API." -ForegroundColor Red
-    exit 1
+    Write-Host "[X] Falha ao contatar a API do GitHub." -ForegroundColor Red
+    Write-Host "Pressione qualquer tecla para sair..."
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    return
 }
 
 # Extract tag/version
@@ -44,8 +46,10 @@ Write-Host ""
 $asset = $release.assets | Where-Object { $_.name -match "^pecinhasfps-.*-setup\.exe$" }
 
 if (-not $asset) {
-    Write-Host "[X] No installer (.exe) found in latest release." -ForegroundColor Red
-    exit 1
+    Write-Host "[X] Nenhum instalador (.exe) encontrado na última versão." -ForegroundColor Red
+    Write-Host "Pressione qualquer tecla para sair..."
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    return
 }
 
 $fileName = $asset.name
@@ -61,8 +65,10 @@ try {
     Write-Host "`n[✔] Download complete!" -ForegroundColor Green
 }
 catch {
-    Write-Host "[X] Failed to download installer." -ForegroundColor Red
-    exit 1
+    Write-Host "[X] Falha ao baixar o instalador." -ForegroundColor Red
+    Write-Host "Pressione qualquer tecla para sair..."
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    return
 }
 
 # Launch installer as admin and delete installer immediately after
@@ -75,6 +81,11 @@ try {
     Write-Host "[>] Obrigado por usar o Pecinhas FPS!" -ForegroundColor Magenta
 }
 catch {
-    Write-Host "[X] Failed to launch installer or delete file." -ForegroundColor Red
-    exit 1
+    Write-Host "[X] Falha ao executar o instalador ou deletar o arquivo." -ForegroundColor Red
+    Write-Host "Pressione qualquer tecla para sair..."
+    $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+    return
 }
+
+Write-Host "`nPressione qualquer tecla para sair..."
+$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
